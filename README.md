@@ -7,4 +7,4 @@
 ![rest](docs/images/rest_documentation.png)
 
 ## Class Design
-![classdesign](docs/images/class_design.png)
+![classdesign](docs/images/class_design.jpg)
