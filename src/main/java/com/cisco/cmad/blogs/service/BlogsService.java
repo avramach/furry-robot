@@ -1,5 +1,6 @@
 package com.cisco.cmad.blogs.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.cisco.cmad.blogs.api.Blog;
@@ -11,50 +12,113 @@ import com.cisco.cmad.blogs.api.InvalidDataException;
 import com.cisco.cmad.blogs.data.BlogsDAO;
 import com.cisco.cmad.blogs.data.BlogsDAOImpl;
 
-public class BlogsService implements Blogs{
+public class BlogsService implements Blogs {
 
-	 private BlogsDAO dao = new BlogsDAOImpl();
+	private BlogsDAO dao = new BlogsDAOImpl();
+	private static BlogsService blogsService = null;
+
+	 private BlogsService() {
+	    }
 	 
+	public static BlogsService getInstance() {
+		if (blogsService == null) {
+			blogsService = new BlogsService();
+		}
+		return blogsService;
+	}
+
 	@Override
 	public void create(Blog blog) throws InvalidDataException, DuplicateDataException, BlogException {
-		// TODO Auto-generated method stub
-		
+		if (blog == null)
+            throw new InvalidDataException();
+        /*if (dao.read(blog.getBlogId()) != null)
+            throw new DuplicateDataException();*/
+        dao.create(blog);
 	}
 
 	@Override
 	public Blog update(Blog updatedBlog) throws InvalidDataException, BlogException {
-		// TODO Auto-generated method stub
-		return null;
+		 if (updatedBlog == null)
+	            throw new InvalidDataException();
+
+	        try {
+	            dao.update(updatedBlog);
+	        } catch (Exception e) {
+	            throw new BlogException();
+	        }
+	        return updatedBlog;
 	}
 
 	@Override
 	public void delete(long blogId) throws DataNotFoundException, BlogException {
-		// TODO Auto-generated method stub
-		
+		read(blogId);
+        try {
+            dao.delete(blogId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BlogException();
+        }
 	}
 
 	@Override
 	public List<Blog> readByCategory(String category) throws DataNotFoundException, BlogException {
-		// TODO Auto-generated method stub
-		return null;
+		List<Blog> blogs = new ArrayList<Blog>();
+        try {
+            blogs = dao.readByCategory(category);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BlogException();
+        }
+
+        if (blogs == null || blogs.isEmpty())
+            throw new DataNotFoundException();
+        return blogs;
 	}
 
 	@Override
 	public List<Blog> readAllBlogs() throws DataNotFoundException, BlogException {
-		// TODO Auto-generated method stub
-		return null;
+		 List<Blog> blogs = new ArrayList<Blog>();
+	        try {
+	            blogs = dao.readAllBlogs();
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            throw new BlogException();
+	        }
+
+	        if (blogs == null || blogs.isEmpty())
+	            throw new DataNotFoundException();
+	        return blogs;
 	}
 
 	@Override
 	public Blog read(long blogId) throws DataNotFoundException, BlogException {
-		// TODO Auto-generated method stub
-		return null;
+		Blog blog = null;
+		try {
+	            blog = dao.read(blogId);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            throw new BlogException();
+	        }
+
+	        if (blog == null)
+	            throw new DataNotFoundException();
+
+	        return blog;
 	}
 
 	@Override
-	public List<Blog> readByUserId(String userId, int pageNum) throws DataNotFoundException, BlogException {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Blog> readByUserId(String userId) throws DataNotFoundException, BlogException {
+		 List<Blog> blogs = new ArrayList<Blog>();
+	        try {
+	            blogs = dao.readByUserId(userId);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            throw new BlogException();
+	        }
+
+	        if (blogs == null || blogs.isEmpty())
+	            throw new DataNotFoundException();
+	        return blogs;
 	}
 
 	@Override

@@ -15,40 +15,69 @@ public class CommentsService implements Comments{
 
 	private CommentsDAO dao = new CommentsDAOImpl();
 	
+	private static CommentsService commentsService = null;
+
+    private CommentsService() {
+    }
+
+    public static CommentsService getInstance() {
+        if (commentsService == null) {
+            commentsService = new CommentsService();
+        }
+        return commentsService;
+    }
+	
 	@Override
 	public void create(Comment comment) throws InvalidDataException, DuplicateDataException, BlogException {
-		// TODO Auto-generated method stub
-		
+		if (comment == null)
+            throw new InvalidDataException();
+        dao.create(comment);
 	}
 
 	@Override
 	public Comment read(long commentId) throws DataNotFoundException, BlogException {
-		// TODO Auto-generated method stub
-		return null;
+		Comment comment = dao.read(commentId);
+        if (comment == null)
+            throw new DataNotFoundException();
+        return comment;
 	}
 
 	@Override
 	public List<Comment> readAllByBlogId(long blogId) throws DataNotFoundException, BlogException {
-		// TODO Auto-generated method stub
-		return null;
+		List<Comment> comments = dao.readAllByBlogId(blogId);
+        if (comments == null)
+            throw new DataNotFoundException();
+        return comments;
 	}
 
 	@Override
-	public Comment update(Comment comment) throws DataNotFoundException, BlogException {
-		// TODO Auto-generated method stub
-		return null;
+	public Comment update(Comment updatedComment) throws DataNotFoundException, BlogException {
+		if (updatedComment == null)
+            throw new BlogException();
+
+        try {
+            dao.update(updatedComment);
+        } catch (Exception e) {
+            throw new DataNotFoundException();
+        }
+        return updatedComment;
 	}
 
 	@Override
 	public void delete(long id) throws BlogException {
-		// TODO Auto-generated method stub
-		
+		read(id);
+        try {
+            dao.delete(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BlogException();
+        }
 	}
 
 	@Override
 	public long readCountByBlogId(long blogId) throws DataNotFoundException, BlogException {
-		// TODO Auto-generated method stub
-		return 0;
+		long count = dao.readCountByBlogId(blogId);
+        return count;
 	}
 
 	@Override

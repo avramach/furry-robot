@@ -16,7 +16,7 @@ public interface Blogs {
 
 	public Blog read(long blogId) throws DataNotFoundException, BlogException;
 
-	public List<Blog> readByUserId(String userId, int pageNum) throws DataNotFoundException, BlogException;
+	public List<Blog> readByUserId(String userId) throws DataNotFoundException, BlogException;
 
 	public long getUpVote(long blogId) throws DataNotFoundException, BlogException;
 

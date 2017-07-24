@@ -11,5 +11,5 @@ public interface Users {
 
 	public User update(User user) throws InvalidDataException, DuplicateDataException, BlogException;
 
-	public void delete(String userId);
+	public void delete(String userId) throws BlogException;
 }

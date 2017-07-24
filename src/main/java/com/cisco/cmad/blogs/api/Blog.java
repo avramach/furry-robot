@@ -2,6 +2,7 @@ package com.cisco.cmad.blogs.api;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
+@Entity
 public class Blog {
 
 	@Id
@@ -28,7 +30,7 @@ public class Blog {
 	private int upVote;
 	private int dowVote;
 
-	@NotNull
+	//@NotNull
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpdatedOn;

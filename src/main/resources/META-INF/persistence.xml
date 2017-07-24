@@ -1,0 +1,19 @@
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+
+http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd" version="2.1">
+
+  <persistence-unit name="com.cisco.blogs" transaction-type="RESOURCE_LOCAL">
+	 <class>com.cisco.cmad.blogs.api.User</class>
+     <class>com.cisco.cmad.blogs.api.Blog</class>
+     <class>com.cisco.cmad.blogs.api.Comment</class>
+    <properties>
+      <!-- Configuring JDBC properties -->
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/cmad_blog" />
+      <property name="javax.persistence.jdbc.user" value="root" />
+      <property name="javax.persistence.jdbc.password" value="public" />
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+      <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+    </properties>
+  </persistence-unit>
+</persistence>

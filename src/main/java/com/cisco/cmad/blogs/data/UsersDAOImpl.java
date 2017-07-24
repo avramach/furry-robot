@@ -1,21 +1,38 @@
 package com.cisco.cmad.blogs.data;
 
 import java.util.List;
+import java.util.logging.Logger;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 import com.cisco.cmad.blogs.api.User;
+import com.cisco.cmad.blogs.util.Constants;
 
 public class UsersDAOImpl implements UsersDAO {
 
+	private EntityManagerFactory factory = Persistence.createEntityManagerFactory(Constants.PERSISTENCE_UNIT_NAME);
+	private Logger logger = Logger.getLogger(getClass().getName());
+
 	@Override
 	public void create(User user) {
-		// TODO Auto-generated method stub
-
+		EntityManager em = factory.createEntityManager();
+		em.getTransaction().begin();
+		user.setPassword(user.getPassword());
+		em.persist(user);
+		em.getTransaction().commit();
+		em.close();
 	}
 
 	@Override
 	public User read(String userId) {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = factory.createEntityManager();
+		em.getTransaction().begin();
+		User user = em.find(User.class, userId);
+		em.getTransaction().commit();
+		em.close();
+		return user;
 	}
 
 	@Override
