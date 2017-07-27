@@ -9,9 +9,9 @@ http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd" version="2.1">
      <class>com.cisco.cmad.blogs.api.Comment</class>
     <properties>
       <!-- Configuring JDBC properties -->
-      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/cmad_blog" />
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://db:3306/cmad_blog" />
       <property name="javax.persistence.jdbc.user" value="root" />
-      <property name="javax.persistence.jdbc.password" value="public" />
+      <property name="javax.persistence.jdbc.password" value="password" />
       <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
       <property name="hibernate.hbm2ddl.auto" value="create-drop" />
     </properties>
