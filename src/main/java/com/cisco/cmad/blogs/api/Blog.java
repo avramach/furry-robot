@@ -28,7 +28,7 @@ public class Blog {
 
 	private String category;
 	private int upVote;
-	private int dowVote;
+	private int downVote;
 
 	//@NotNull
 	@UpdateTimestamp
@@ -90,12 +90,12 @@ public class Blog {
 		this.upVote = upVote;
 	}
 
-	public int getDowVote() {
-		return dowVote;
+	public int getDownVote() {
+		return downVote;
 	}
 
-	public void setDowVote(int dowVote) {
-		this.dowVote = dowVote;
+	public void setDownVote(int downVote) {
+		this.downVote = downVote;
 	}
 
 	public Date getLastUpdatedOn() {

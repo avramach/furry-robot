@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 import com.cisco.cmad.blogs.api.Blog;
 import com.cisco.cmad.blogs.util.Constants;
@@ -36,9 +37,11 @@ public class BlogsDAOImpl implements BlogsDAO {
 	@Override
 	public Blog read(long blogId) {
 		EntityManager em = factory.createEntityManager();
+
 		em.getTransaction().begin();
 		Blog blog = em.find(Blog.class, blogId);
 		em.getTransaction().commit();
+
 		em.close();
 		return blog;
 	}
@@ -51,8 +54,15 @@ public class BlogsDAOImpl implements BlogsDAO {
 
 	@Override
 	public List<Blog> readAllBlogs() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = factory.createEntityManager();
+
+		em.getTransaction().begin();
+	    TypedQuery<Blog> query = em.createQuery("SELECT b FROM Blog b", Blog.class);
+	    List<Blog> blogs = query.getResultList();
+	    em.getTransaction().commit();
+
+	    em.close();
+	    return blogs;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package com.cisco.cmad.blogs.rest;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -25,6 +27,7 @@ public class BlogsController {
    
     @GET
     @Path("/{blogId}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response read(@PathParam("blogId") long blogId) {
         Blog blog = blogsService.read(blogId);
         return Response.ok().entity(blog).build();
@@ -34,8 +37,8 @@ public class BlogsController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll() {
 		try {
-			// TODO implementation
-			return Response.ok().build();
+			List<Blog> blogs = blogsService.readAllBlogs();
+			return Response.ok().entity(blogs).build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.NO_CONTENT).build();
 		} catch (BlogException be) {
@@ -68,20 +71,6 @@ public class BlogsController {
 			// TODO implementation
 			return Response.ok().build();
 		} catch (InvalidDataException ide) {
-			return Response.status(Response.Status.BAD_REQUEST).build();
-		} catch (BlogException be) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		}
-	}
-
-	@GET
-	@Path("/{blogid}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response get(@PathParam("blogid") int blogid) {
-		try {
-			// TODO implementation
-			return Response.ok().build();
-		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		} catch (BlogException be) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
