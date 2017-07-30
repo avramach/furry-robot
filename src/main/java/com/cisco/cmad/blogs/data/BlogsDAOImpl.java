@@ -81,8 +81,19 @@ public class BlogsDAOImpl implements BlogsDAO {
 
 	@Override
 	public void update(Blog blog) {
-		// TODO Auto-generated method stub
+		EntityManager em = factory.createEntityManager();
 
+		em.getTransaction().begin();
+        Blog temp = em.find(Blog.class, blog.getBlogId());
+
+        temp.setBlogContent(blog.getBlogContent());
+        temp.setTitle(blog.getTitle());
+        temp.setUpVote(blog.getUpVote());
+        temp.setDownVote(blog.getDownVote());
+
+        em.persist(temp);
+        em.getTransaction().commit();
+        em.close();
 	}
 
 	@Override

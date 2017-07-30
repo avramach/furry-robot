@@ -74,10 +74,9 @@ public class BlogsController {
 	@POST
 	@Path("/{blogid}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(@PathParam("blogid") int blogid) {
+	public Response update(@PathParam("blogid") int blogid, Blog blog) {
 		try {
-			Blog blog = blogsService.read(blogid);
-			blogsService.create(blog);
+			blogsService.update(blog);
 			return Response.ok().build();
 		} catch (InvalidDataException ide) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -103,7 +102,11 @@ public class BlogsController {
 	@Path("/{blogid}/upvote")
 	public Response doUpvote(@PathParam("blogid") int blogid) {
 		try {
-			// TODO implementation
+			Blog blog = blogsService.read(blogid);
+			int upvote = blog.getUpVote();
+			upvote++;
+			blog.setUpVote(upvote);
+			blogsService.update(blog);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -118,7 +121,11 @@ public class BlogsController {
 	@Path("/{blogid}/upvote")
 	public Response undoUpvote(@PathParam("blogid") int blogid) {
 		try {
-			// TODO implementation
+			Blog blog = blogsService.read(blogid);
+			int upvote = blog.getUpVote();
+			if (upvote > 0) upvote--;
+			blog.setUpVote(upvote);
+			blogsService.update(blog);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -133,7 +140,11 @@ public class BlogsController {
 	@Path("/{blogid}/downvote")
 	public Response doDownvote(@PathParam("blogid") int blogid) {
 		try {
-			// TODO implementation
+			Blog blog = blogsService.read(blogid);
+			int downvote = blog.getDownVote();
+			downvote++;
+			blog.setDownVote(downvote);
+			blogsService.update(blog);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -148,42 +159,14 @@ public class BlogsController {
 	@Path("/{blogid}/downvote")
 	public Response undoDownvote(@PathParam("blogid") int blogid) {
 		try {
-			// TODO implementation
+			Blog blog = blogsService.read(blogid);
+			int downvote = blog.getDownVote();
+			if (downvote > 0) downvote--;
+			blog.setDownVote(downvote);
+			blogsService.update(blog);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
-		} catch (InvalidDataException ide) {
-			return Response.status(Response.Status.BAD_REQUEST).build();
-		} catch (BlogException be) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		}
-	}
-
-	@GET
-	@Path("/{blogid}/upvote")
-	public Response upvote(@PathParam("blogid") int blogid) {
-		try {
-			// TODO implementation
-			return Response.ok().build();
-		} catch (DataNotFoundException dnfe) {
-			// TODO: how to differentiate between no upvotes and no blog id
-			// (check above)
-			return Response.status(Response.Status.NO_CONTENT).build();
-		} catch (InvalidDataException ide) {
-			return Response.status(Response.Status.BAD_REQUEST).build();
-		} catch (BlogException be) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		}
-	}
-
-	@GET
-	@Path("/{blogid}/downvote")
-	public Response downvote(@PathParam("blogid") int blogid) {
-		try {
-			// TODO implementation
-			return Response.ok().build();
-		} catch (DataNotFoundException dnfe) {
-			return Response.status(Response.Status.NO_CONTENT).build();
 		} catch (InvalidDataException ide) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		} catch (BlogException be) {
