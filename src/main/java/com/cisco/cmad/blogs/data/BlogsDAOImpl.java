@@ -48,8 +48,16 @@ public class BlogsDAOImpl implements BlogsDAO {
 
 	@Override
 	public List<Blog> readByCategory(String category) {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = factory.createEntityManager();
+
+		em.getTransaction().begin();
+	    TypedQuery<Blog> query = em.createQuery("SELECT b FROM Blog b WHERE b.category = :category", Blog.class);
+	    query.setParameter("category", category);
+	    List<Blog> blogs = query.getResultList();
+	    em.getTransaction().commit();
+
+	    em.close();
+	    return blogs;
 	}
 
 	@Override

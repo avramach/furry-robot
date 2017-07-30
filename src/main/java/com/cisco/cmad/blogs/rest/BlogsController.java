@@ -33,6 +33,14 @@ public class BlogsController {
         return Response.ok().entity(blog).build();
     }
 
+    @GET
+    @Path("/category/{category}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response readCategory(@PathParam("category") String category) {
+        List<Blog> blogs = blogsService.readByCategory(category);
+        return Response.ok().entity(blogs).build();
+    }
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll() {
@@ -68,7 +76,8 @@ public class BlogsController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("blogid") int blogid) {
 		try {
-			// TODO implementation
+			Blog blog = blogsService.read(blogid);
+			blogsService.create(blog);
 			return Response.ok().build();
 		} catch (InvalidDataException ide) {
 			return Response.status(Response.Status.BAD_REQUEST).build();

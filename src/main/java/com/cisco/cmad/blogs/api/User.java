@@ -18,7 +18,7 @@ public class User {
 
 	private String lastName;
 
-	//@NotNull
+	@NotNull
 	private String emailId;
 
 	public User() {
