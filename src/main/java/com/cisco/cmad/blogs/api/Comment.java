@@ -7,14 +7,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
-@Entity
+@Entity(name = "Comment")
+@NamedQueries({
+		@NamedQuery(name = Comment.FIND_BLOG_COMMENTS, query = "SELECT c FROM Comment c WHERE c.blog.blogId = :blogId ORDER BY c.lastUpdatedOn DESC"),
+		@NamedQuery(name = Comment.COUNT_BLOG_COMMENTS, query = "SELECT COUNT(c) FROM Comment c WHERE c.blog.blogId = :blogId") })
 public class Comment {
+
+	public static final String FIND_BLOG_COMMENTS = "Blog.findBlogComments";
+	public static final String COUNT_BLOG_COMMENTS = "Blog.countBlogComments";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

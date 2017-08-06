@@ -13,12 +13,16 @@ import javax.ws.rs.core.Response;
 
 import com.cisco.cmad.blogs.api.BlogException;
 import com.cisco.cmad.blogs.api.Comment;
+import com.cisco.cmad.blogs.api.Comments;
 import com.cisco.cmad.blogs.api.DataNotFoundException;
 import com.cisco.cmad.blogs.api.DuplicateDataException;
 import com.cisco.cmad.blogs.api.InvalidDataException;
+import com.cisco.cmad.blogs.service.CommentsService;
 
 public class CommentsController {
 
+	private static Comments commentService = CommentsService.getInstance();
+	
 	@GET
 	@Path("/blogs/{blogid}/comments")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -38,7 +42,7 @@ public class CommentsController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response create(@PathParam("blogid") int blogid, Comment comment) {
 		try {
-			// TODO implementation
+			commentService.create(comment);
 			return Response.status(Response.Status.CREATED).build();
 		} catch (InvalidDataException ide) {
 			return Response.status(Response.Status.BAD_REQUEST).build();

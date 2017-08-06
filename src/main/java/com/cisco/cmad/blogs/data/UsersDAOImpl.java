@@ -6,9 +6,12 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import com.cisco.cmad.blogs.api.User;
 import com.cisco.cmad.blogs.util.Constants;
+import com.cisco.cmad.jwt.utils.PasswordUtils;
 
 public class UsersDAOImpl implements UsersDAO {
 
@@ -26,37 +29,72 @@ public class UsersDAOImpl implements UsersDAO {
 	}
 
 	@Override
-	public User read(String userId) {
+	public User read(String userName) {
 		EntityManager em = factory.createEntityManager();
 		em.getTransaction().begin();
-		User user = em.find(User.class, userId);
+		User user = em.find(User.class, userName);
 		em.getTransaction().commit();
 		em.close();
 		return user;
 	}
 
 	@Override
-	public User readByUserIdAndPassword(String userId, String password) {
-		// TODO Auto-generated method stub
-		return null;
+	public User readByUserIdAndPassword(String userName, String password) {
+		logger.info("readByUserIdAndPassword userId: " + userName + "  password: " + password);
+		EntityManager em = factory.createEntityManager();
+		TypedQuery<User> query = em.createNamedQuery(User.FIND_BY_LOGIN_PASSWORD, User.class);
+		query.setParameter("userId", userName);
+		logger.info("encrypted password: " + PasswordUtils.encryptPassword(password));
+		query.setParameter("password", PasswordUtils.encryptPassword(password));
+		User user = query.getSingleResult();
+		return user;
 	}
 
 	@Override
 	public List<User> readAllUsers() {
-		// TODO Auto-generated method stub
-		return null;
+		EntityManager em = factory.createEntityManager();
+		em.getTransaction().begin();
+		TypedQuery<User> tquery = em.createNamedQuery(User.FIND_ALL, User.class);
+		List<User> users = tquery.getResultList();
+		em.getTransaction().commit();
+		em.close();
+		return users;
 	}
 
 	@Override
-	public void update(User user) {
-		// TODO Auto-generated method stub
-
+	public void update(User updatedUser) {
+		EntityManager em = factory.createEntityManager();
+		em.getTransaction().begin();
+		User user = em.find(User.class, updatedUser.getUserName());
+		user.setEmailId(updatedUser.getEmailId());
+		user.setFirstName(updatedUser.getFirstName());
+		user.setLastName(updatedUser.getLastName());
+		em.getTransaction().commit();
+		em.close();
 	}
 
 	@Override
 	public void delete(String userId) {
-		// TODO Auto-generated method stub
+		EntityManager em = factory.createEntityManager();
+		em.getTransaction().begin();
+		User user = em.find(User.class, userId);
+		em.remove(user);
+		deleteBlogsByUserId(userId, em);
+		deleteCommentsByUserId(userId, em);
+		em.getTransaction().commit();
+		em.close();
+	}
 
+	private void deleteBlogsByUserId(String userId, EntityManager em) {
+		Query query = em.createNamedQuery(User.DELETE_BLOGS_BY_USER_ID);
+		query.setParameter("userId", userId);
+		query.executeUpdate();
+	}
+
+	private void deleteCommentsByUserId(String userId, EntityManager em) {
+		Query query = em.createNamedQuery(User.DELETE_COMMENTS_BY_USER_ID);
+		query.setParameter("userId", userId);
+		query.executeUpdate();
 	}
 
 }

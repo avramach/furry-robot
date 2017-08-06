@@ -89,7 +89,7 @@ public class BlogsController {
 	@Path("/{blogid}")
 	public Response delete(@PathParam("blogid") int blogid) {
 		try {
-			// TODO implementation
+			blogsService.delete(blogid);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();

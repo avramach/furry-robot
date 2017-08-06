@@ -40,7 +40,6 @@ public class BlogsService implements Blogs {
 	public Blog update(Blog updatedBlog) throws InvalidDataException, BlogException {
 		 if (updatedBlog == null)
 	            throw new InvalidDataException();
-
 	        try {
 	            dao.update(updatedBlog);
 	        } catch (Exception e) {

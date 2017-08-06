@@ -7,15 +7,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
-@Entity
+@Entity(name = "Blog")
+@NamedQueries({
+		@NamedQuery(name = Blog.DELETE_BLOG_COMMENTS, query = "DELETE FROM Comment c WHERE c.blog.blogId = :blogId"),
+		@NamedQuery(name = Blog.FIND_USER_BLOGS, query = "SELECT b FROM Blog b WHERE b.author.userName = :userName") })
+
 public class Blog {
 
+	public static final String DELETE_BLOG_COMMENTS = "Blog.deleteBlogComments";
+	public static final String FIND_USER_BLOGS = "Blog.findUserBlogs";
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long blogId;
@@ -30,7 +39,7 @@ public class Blog {
 	private int upVote;
 	private int downVote;
 
-	//@NotNull
+	// @NotNull
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date lastUpdatedOn;
