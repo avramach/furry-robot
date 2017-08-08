@@ -1,4 +1,4 @@
-var URLBase = "http://192.168.99.100:9999/cmad-blog-project/";
+var URLBase = ""; //"http://192.168.99.100:9999/cmad-blog-project/";
 
 function createComment(id) {
     var commentTemplate = '<div class="panel panel-default"> \
