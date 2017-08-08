@@ -49,7 +49,7 @@ public class CommentsController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getCount(@PathParam("blogid") int blogid) {
 		try {
-			var count = commentService.readCountByBlogId(blogid);
+			long count = commentService.readCountByBlogId(blogid);
 			return Response.ok().entity(count).build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.NO_CONTENT).build();

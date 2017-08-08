@@ -78,10 +78,8 @@ function appendBlog(id, focus) {
                     </div> \
                 </div>';
 
-    console.log("appendBlog: " + id + "/ " + focus);
     var collapse = (focus === true) ? "in" : "";
     var blog = blogTemplate.replace(/\{0\}/g, id).replace(/\{1\}/g, "bloglist").replace(/\{2\}/g, collapse);
-    console.log("blog: " + blog);
     return blog;
 }
 
@@ -98,7 +96,6 @@ function loadHomePage() {
     $('#blog-read').hide();
 
     $.getJSON(url, function(bloglist) {
-        console.warn("Blog: " + bloglist);
         $.each(bloglist, function(index, blogEntry) {
             blog = blog.concat(appendBlog(index, (index === 0) ? true : false));
         })
@@ -106,12 +103,36 @@ function loadHomePage() {
         $("#bloglist").html(blog);
 
         $.each(bloglist, function(index, blogEntry) {
-            console.warn("Index: " + index + " blogEntry: " + JSON.stringify(blogEntry));
             $("#blog-" + index + "-title").html(blogEntry.title);
             $("#blog-" + index + "-content").html(blogEntry.blogContent);
-            //$("#blog-" + index + "-comments").html(0);
             $("#blog-" + index + "-upvotes").html(blogEntry.upVote);
             $("#blog-" + index + "-downvotes").html(blogEntry.downVote);
+
+            $("#blog-" + index + "-upvotes").click(function() {
+                $.ajax({
+                    url: URLBase + "public/blogs/" + blogEntry.blogId + "/upvote",
+                    type: 'PUT',
+                    success: function(result) {
+                        loadHomePage();
+                    }
+                });
+            })
+
+            $("#blog-" + index + "-downvotes").click(function() {
+                $.ajax({
+                    url: URLBase + "public/blogs/" + blogEntry.blogId + "/downvote",
+                    type: 'PUT',
+                    success: function(result) {
+                        loadHomePage();
+                    }
+                });
+            })
+
+            var countUrl = URLBase + "public/blogs/" + blogEntry.blogId + "/comments/count";
+            $.get(countUrl, function(count) {
+                console.warn("Count: " + count);
+                $("#blog-" + index + "-comments").html(count);
+            })
         })
     })
 }
@@ -138,6 +159,9 @@ function loadBlog(blogId) {
 }
 
 $(document).ready(function() {
+    $('#home').click(function() {
+        loadHomePage();
+    });
     loadHomePage();
     // //var url = "http://localhost:8081/cmad-blog-project/public/blogs"
     // var blog1 = appendBlog("1", true);
