@@ -37,7 +37,7 @@ public class Comment {
 	private Date lastUpdatedOn;
 
 	private int upVote;
-	private int dowVote;
+	private int downVote;
 
 	@ManyToOne
 	private User addedBy;
@@ -81,12 +81,12 @@ public class Comment {
 		this.upVote = upVote;
 	}
 
-	public int getDowVote() {
-		return dowVote;
+	public int getDownVote() {
+		return downVote;
 	}
 
-	public void setDowVote(int dowVote) {
-		this.dowVote = dowVote;
+	public void setDownVote(int downVote) {
+		this.downVote = downVote;
 	}
 
 	public User getAddedBy() {

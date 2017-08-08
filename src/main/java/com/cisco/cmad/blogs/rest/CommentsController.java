@@ -1,5 +1,7 @@
 package com.cisco.cmad.blogs.rest;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -11,25 +13,44 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.cisco.cmad.blogs.api.Blog;
 import com.cisco.cmad.blogs.api.BlogException;
+import com.cisco.cmad.blogs.api.Blogs;
 import com.cisco.cmad.blogs.api.Comment;
 import com.cisco.cmad.blogs.api.Comments;
 import com.cisco.cmad.blogs.api.DataNotFoundException;
 import com.cisco.cmad.blogs.api.DuplicateDataException;
 import com.cisco.cmad.blogs.api.InvalidDataException;
+import com.cisco.cmad.blogs.service.BlogsService;
 import com.cisco.cmad.blogs.service.CommentsService;
 
+@Path("/blogs/{blogid}")
 public class CommentsController {
 
 	private static Comments commentService = CommentsService.getInstance();
+	private static Blogs blogService = BlogsService.getInstance();
 	
 	@GET
-	@Path("/blogs/{blogid}/comments")
+	@Path("/comments")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll(@PathParam("blogid") int blogid) {
 		try {
-			// TODO implementation
-			return Response.ok().build();
+			List<Comment> comments = commentService.readAllByBlogId(blogid);
+			return Response.ok().entity(comments).build();
+		} catch (DataNotFoundException dnfe) {
+			return Response.status(Response.Status.NO_CONTENT).build();
+		} catch (BlogException be) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@GET
+	@Path("/comments/count")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getCount(@PathParam("blogid") int blogid) {
+		try {
+			var count = commentService.readCountByBlogId(blogid);
+			return Response.ok().entity(count).build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.NO_CONTENT).build();
 		} catch (BlogException be) {
@@ -38,10 +59,12 @@ public class CommentsController {
 	}
 
 	@POST
-	@Path("/blogs/{blogid}/comments")
+	@Path("/comments")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response create(@PathParam("blogid") int blogid, Comment comment) {
 		try {
+			Blog blog = blogService.read(blogid);
+			comment.setBlog(blog);
 			commentService.create(comment);
 			return Response.status(Response.Status.CREATED).build();
 		} catch (InvalidDataException ide) {
@@ -56,11 +79,11 @@ public class CommentsController {
 	// INFO should have been PATCH - but JERSY does not support PATCH and hence
 	// using POST
 	@POST
-	@Path("/blogs/{blogid}/comments/{commentid}")
+	@Path("/comments/{commentid}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
+	public Response update(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid, Comment comment) {
 		try {
-			// TODO implementation
+			commentService.update(comment);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -70,10 +93,10 @@ public class CommentsController {
 	}
 
 	@DELETE
-	@Path("/blogs/{blogid}/comments/{commentid}")
+	@Path("/comments/{commentid}")
 	public Response delete(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
-			// TODO implementation
+			commentService.delete(commentid);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -83,10 +106,14 @@ public class CommentsController {
 	}
 
 	@PUT
-	@Path("/blogs/{blogid}/comments/{commentid}/upvote")
+	@Path("/comments/{commentid}/upvote")
 	public Response doUpvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
-			// TODO implementation
+			Comment comment = commentService.read(commentid);
+			int upvote = comment.getUpVote();
+			upvote++;
+			comment.setUpVote(upvote);
+			commentService.update(comment);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -98,10 +125,14 @@ public class CommentsController {
 	}
 
 	@DELETE
-	@Path("/blogs/{blogid}/comments/{commentid}/upvote")
+	@Path("/comments/{commentid}/upvote")
 	public Response undoUpvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
-			// TODO implementation
+			Comment comment = commentService.read(commentid);
+			int upvote = comment.getUpVote();
+			if (upvote > 0) upvote--;
+			comment.setUpVote(upvote);
+			commentService.update(comment);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -113,10 +144,14 @@ public class CommentsController {
 	}
 
 	@PUT
-	@Path("/blogs/{blogid}/comments/{commentid}/downvote")
+	@Path("/comments/{commentid}/downvote")
 	public Response doDownvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
-			// TODO implementation
+			Comment comment = commentService.read(commentid);
+			int downvote = comment.getDownVote();
+			downvote++;
+			comment.setUpVote(downvote);
+			commentService.update(comment);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -128,10 +163,14 @@ public class CommentsController {
 	}
 
 	@DELETE
-	@Path("/blogs/{blogid}/comments/{commentid}/downvote")
+	@Path("/comments/{commentid}/downvote")
 	public Response undoDownvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
-			// TODO implementation
+			Comment comment = commentService.read(commentid);
+			int downvote = comment.getDownVote();
+			if (downvote > 0) downvote--;
+			comment.setUpVote(downvote);
+			commentService.update(comment);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
@@ -141,37 +180,4 @@ public class CommentsController {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
-
-	@GET
-	@Path("/blogs/{blogid}/comments/{commentid}/upvote")
-	public Response upvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
-		try {
-			// TODO implementation
-			return Response.ok().build();
-		} catch (DataNotFoundException dnfe) {
-			// TODO how to differentiate blogid or commentid not available
-			return Response.status(Response.Status.NO_CONTENT).build();
-		} catch (InvalidDataException ide) {
-			return Response.status(Response.Status.BAD_REQUEST).build();
-		} catch (BlogException be) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		}
-	}
-
-	@GET
-	@Path("/blogs/{blogid}/comments/{commentid}/downvote")
-	public Response downvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
-		try {
-			// TODO implementation
-			return Response.ok().build();
-		} catch (DataNotFoundException dnfe) {
-			// TODO how to differentiate blogid or commentid not available
-			return Response.status(Response.Status.NO_CONTENT).build();
-		} catch (InvalidDataException ide) {
-			return Response.status(Response.Status.BAD_REQUEST).build();
-		} catch (BlogException be) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		}
-	}
-
 }
