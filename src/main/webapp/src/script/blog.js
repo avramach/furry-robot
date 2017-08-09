@@ -1,4 +1,4 @@
-var URLBase = ""; //"http://192.168.99.100:9999/cmad-blog-project/";
+var URLBase = ""; //http://192.168.99.100:9999/cmad-blog-project/";
 
 function createComment(id) {
     var commentTemplate = '<div class="panel panel-default"> \
@@ -24,23 +24,23 @@ function createComment(id) {
 }
 
 function createBlog() {
-    var blogTemplate = '<h2><b><span id="blog-0-title"></span></b></h2> \
+    var blogTemplate = '<h2><b><span id="blog-read-title"></span></b></h2> \
                         <div class="panel panel-default"> \
                             <div class="panel-body"> \
-                                <span id="blog-0-content"></span> \
+                                <span id="blog-read-content"></span> \
                             </div> \
                             <div class="panel-footer row"> \
                                 <div class="col-md-6"> \
                                     <a href="#">#delete</a> \
                                 </div> \
                                 <div class="col-md-2"> \
-                                    <a href="#">Comments <span class="badge" id="blog-0-comments"></span></a> \
+                                    <!--a href="#">Comments <span class="badge" id="blog-read-comments"></span></a--> \
                                 </div> \
                                 <div class="col-md-2"> \
-                                    <a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> <span class="badge" id="blog-0-upvotes"></span></a> \
+                                    <a href="#"><span class="glyphicon glyphicon-thumbs-up"></span> <span class="badge" id="blog-read-upvotes"></span></a> \
                                 </div> \
                                 <div class="col-md-2"> \
-                                    <a href="#"><span class="glyphicon glyphicon-thumbs-down"></span> <span class="badge" id="blog-0-downvotes"></span></a> \
+                                    <a href="#"><span class="glyphicon glyphicon-thumbs-down"></span> <span class="badge" id="blog-read-downvotes"></span></a> \
                                 </div> \
                             </div> \
                         </div>'
@@ -128,9 +128,12 @@ function loadHomePage() {
                 });
             })
 
+            $("#collapse" + index).click(function() {
+                loadBlog(blogEntry.blogId);
+            })
+
             var countUrl = URLBase + "public/blogs/" + blogEntry.blogId + "/comments/count";
             $.get(countUrl, function(count) {
-                console.warn("Count: " + count);
                 $("#blog-" + index + "-comments").html(count);
             })
         })
@@ -150,11 +153,10 @@ function loadBlog(blogId) {
 
     $.getJSON(url, function(blog) {
         $("#blogread").html("".concat(createBlog()));
-        $("#blog-" + index + "-title").html(blogEntry.title);
-        $("#blog-" + index + "-content").html(blogEntry.blogContent);
-        //$("#blog-" + index + "-comments").html(0);
-        $("#blog-" + index + "-upvotes").html(blogEntry.upVote);
-        $("#blog-" + index + "-downvotes").html(blogEntry.downVote);
+        $("#blog-read-title").html(blog.title);
+        $("#blog-read-content").html(blog.blogContent);
+        $("#blog-read-upvotes").html(blog.upVote);
+        $("#blog-read-downvotes").html(blog.downVote);
     });
 }
 

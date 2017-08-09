@@ -24,14 +24,13 @@ import com.cisco.cmad.blogs.api.InvalidDataException;
 import com.cisco.cmad.blogs.service.BlogsService;
 import com.cisco.cmad.blogs.service.CommentsService;
 
-@Path("/blogs/{blogid}")
+@Path("/blogs/{blogid}/comments")
 public class CommentsController {
 
 	private static Comments commentService = CommentsService.getInstance();
 	private static Blogs blogService = BlogsService.getInstance();
 	
 	@GET
-	@Path("/comments")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll(@PathParam("blogid") int blogid) {
 		try {
@@ -45,7 +44,7 @@ public class CommentsController {
 	}
 
 	@GET
-	@Path("/comments/count")
+	@Path("/count")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getCount(@PathParam("blogid") int blogid) {
 		try {
@@ -59,7 +58,6 @@ public class CommentsController {
 	}
 
 	@POST
-	@Path("/comments")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response create(@PathParam("blogid") int blogid, Comment comment) {
 		try {
@@ -79,7 +77,7 @@ public class CommentsController {
 	// INFO should have been PATCH - but JERSY does not support PATCH and hence
 	// using POST
 	@POST
-	@Path("/comments/{commentid}")
+	@Path("/{commentid}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response update(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid, Comment comment) {
 		try {
@@ -93,7 +91,7 @@ public class CommentsController {
 	}
 
 	@DELETE
-	@Path("/comments/{commentid}")
+	@Path("/{commentid}")
 	public Response delete(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
 			commentService.delete(commentid);
@@ -106,7 +104,7 @@ public class CommentsController {
 	}
 
 	@PUT
-	@Path("/comments/{commentid}/upvote")
+	@Path("/{commentid}/upvote")
 	public Response doUpvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
 			Comment comment = commentService.read(commentid);
@@ -125,7 +123,7 @@ public class CommentsController {
 	}
 
 	@DELETE
-	@Path("/comments/{commentid}/upvote")
+	@Path("/{commentid}/upvote")
 	public Response undoUpvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
 			Comment comment = commentService.read(commentid);
@@ -144,7 +142,7 @@ public class CommentsController {
 	}
 
 	@PUT
-	@Path("/comments/{commentid}/downvote")
+	@Path("/{commentid}/downvote")
 	public Response doDownvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
 			Comment comment = commentService.read(commentid);
@@ -163,7 +161,7 @@ public class CommentsController {
 	}
 
 	@DELETE
-	@Path("/comments/{commentid}/downvote")
+	@Path("/{commentid}/downvote")
 	public Response undoDownvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
 			Comment comment = commentService.read(commentid);
