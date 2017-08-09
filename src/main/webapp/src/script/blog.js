@@ -1,4 +1,4 @@
-var URLBase = ""; //http://192.168.99.100:9999/cmad-blog-project/";
+var URLBase = ""; //"http://192.168.99.100:9999/cmad-blog-project/";
 
 function createComment(id) {
     var commentTemplate = '<div class="panel panel-default"> \
@@ -143,6 +143,7 @@ function loadHomePage() {
 function loadBlog(blogId) {
     // send a request to load the input blog entry
     var url = URLBase + "public/blogs/" + blogId;
+    var comments = "";
 
     // allow option to sort tabs/ hide create option
     $('#opt-create').hide();
@@ -157,6 +158,40 @@ function loadBlog(blogId) {
         $("#blog-read-content").html(blog.blogContent);
         $("#blog-read-upvotes").html(blog.upVote);
         $("#blog-read-downvotes").html(blog.downVote);
+
+        var commentUrl = URLBase + "public/blogs/" + blog.blogId + "/comments/";
+        $.getJSON(commentUrl, function(commentList) {
+            $.each(commentList, function(index, commentEntry) {
+                comments = comments.concat(createComment(index))
+            })
+            $("#commentlist").html(comments);
+
+            $.each(commentList, function(index, commentEntry) {
+                $("#comment-" + index + "-content").html(commentEntry.commentText);
+                $("#comment-" + index + "-upvotes").html(commentEntry.upVote);
+                $("#comment-" + index + "-downvotes").html(commentEntry.downVote);
+
+                $("#comment-" + index + "-upvotes").click(function() {
+                    $.ajax({
+                        url: URLBase + "public/blogs/" + blogEntry.blogId + "/comments/" + commentrEntry.commentId + "/upvote",
+                        type: 'PUT',
+                        success: function(result) {
+                            loadBlog(blogId);
+                        }
+                    });
+                })
+
+                $("#comment-" + index + "-downvotes").click(function() {
+                    $.ajax({
+                        url: URLBase + "public/blogs/" + blogEntry.blogId + "/comments/" + commentrEntry.commentId + "/downvote",
+                        type: 'PUT',
+                        success: function(result) {
+                            loadBlog(blogId);
+                        }
+                    });
+                })
+            })
+        })
     });
 }
 
