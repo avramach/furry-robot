@@ -51,6 +51,8 @@ public class CommentsDAOImpl implements CommentsDAO {
 		em.getTransaction().begin();
 		Comment comment = em.find(Comment.class, updatedComment.getCommentId());
 		comment.setCommentText(updatedComment.getCommentText());
+		comment.setUpVote(updatedComment.getUpVote());
+		comment.setDownVote(updatedComment.getDownVote());
 		em.getTransaction().commit();
 		em.close();
 	}

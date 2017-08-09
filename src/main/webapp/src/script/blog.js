@@ -1,4 +1,4 @@
-var URLBase = ""; //"http://192.168.99.100:9999/cmad-blog-project/";
+var URLBase = ""; //http://192.168.99.100:9999/cmad-blog-project/";
 
 function createComment(id) {
     var commentTemplate = '<div class="panel panel-default"> \
@@ -173,7 +173,7 @@ function loadBlog(blogId) {
 
                 $("#comment-" + index + "-upvotes").click(function() {
                     $.ajax({
-                        url: URLBase + "public/blogs/" + blogEntry.blogId + "/comments/" + commentrEntry.commentId + "/upvote",
+                        url: URLBase + "public/blogs/" + blogId + "/comments/" + commentEntry.commentId + "/upvote",
                         type: 'PUT',
                         success: function(result) {
                             loadBlog(blogId);
@@ -183,7 +183,7 @@ function loadBlog(blogId) {
 
                 $("#comment-" + index + "-downvotes").click(function() {
                     $.ajax({
-                        url: URLBase + "public/blogs/" + blogEntry.blogId + "/comments/" + commentrEntry.commentId + "/downvote",
+                        url: URLBase + "public/blogs/" + blogId + "/comments/" + commentEntry.commentId + "/downvote",
                         type: 'PUT',
                         success: function(result) {
                             loadBlog(blogId);

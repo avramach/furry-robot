@@ -148,7 +148,7 @@ public class CommentsController {
 			Comment comment = commentService.read(commentid);
 			int downvote = comment.getDownVote();
 			downvote++;
-			comment.setUpVote(downvote);
+			comment.setDownVote(downvote);
 			commentService.update(comment);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
@@ -167,7 +167,7 @@ public class CommentsController {
 			Comment comment = commentService.read(commentid);
 			int downvote = comment.getDownVote();
 			if (downvote > 0) downvote--;
-			comment.setUpVote(downvote);
+			comment.setDownVote(downvote);
 			commentService.update(comment);
 			return Response.ok().build();
 		} catch (DataNotFoundException dnfe) {
