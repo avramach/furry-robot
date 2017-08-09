@@ -1,4 +1,4 @@
-var URLBase = ""; //http://192.168.99.100:9999/cmad-blog-project/";
+var URLBase = ""; //"http://192.168.99.100:9999/cmad-blog-project/";
 
 function createComment(id) {
     var commentTemplate = '<div class="panel panel-default"> \
@@ -94,6 +94,9 @@ function loadHomePage() {
 
     $('#blog-list').show();
     $('#blog-read').hide();
+    $('#blog-create').hide();
+
+    $("#bloglist").html("");
 
     $.getJSON(url, function(bloglist) {
         $.each(bloglist, function(index, blogEntry) {
@@ -140,6 +143,57 @@ function loadHomePage() {
     })
 }
 
+function loadCreate() {
+    var url = URLBase + "public/blogs/";
+
+    $('#opt-create').hide();
+    $('#opt-sort').hide();
+
+    $('#blog-list').hide();
+    $('#blog-read').hide();
+    $('#blog-create').show();
+
+    $('#blog-title').val("")
+    $('#blog-comment').val("")
+
+    $('#blog-btn-create').click(function() {
+        var title = $('#blog-title').val();
+        var content = $('#blog-comment').val();
+        if ((title !== "") && (content !== "")) {
+            var blog = {
+                "title": title,
+                "blogContent": content,
+                "category": "private",
+                "upVote": 0,
+                "downVote": 0,
+                "author": { "userName": "test", "password": "test@123", "firstName": "Tester", "lastName": "", "emailId": "test@test.com" }
+            }
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: JSON.stringify(blog),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                complete: function(jqXHR, textStatus) {
+                    switch (jqXHR.status) {
+                        case 201:
+                            loadHomePage();
+                            break;
+                        default:
+                            alert("Error in creating the blog!!!");
+                    }
+                }
+            });
+        } else {
+            loadCreate();
+        }
+    })
+
+    $('#blog-btn-cancel').click(function() {
+        loadCreate();
+    })
+}
+
 function loadBlog(blogId) {
     // send a request to load the input blog entry
     var url = URLBase + "public/blogs/" + blogId;
@@ -151,6 +205,10 @@ function loadBlog(blogId) {
 
     $('#blog-list').hide();
     $('#blog-read').show();
+    $('#blog-create').hide();
+
+    $("#blogread").html("");
+    $("#commentlist").html("");
 
     $.getJSON(url, function(blog) {
         $("#blogread").html("".concat(createBlog()));
@@ -199,6 +257,9 @@ $(document).ready(function() {
     $('#home').click(function() {
         loadHomePage();
     });
+    $('#opt-create').click(function() {
+        loadCreate();
+    })
     loadHomePage();
     // //var url = "http://localhost:8081/cmad-blog-project/public/blogs"
     // var blog1 = appendBlog("1", true);
