@@ -2,55 +2,32 @@ package com.cisco.cmad.blogs.api;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.PrePersist;
 
-import org.hibernate.annotations.UpdateTimestamp;
-
-@Entity(name = "Blog")
-@NamedQueries({
-		@NamedQuery(name = Blog.DELETE_BLOG_COMMENTS, query = "DELETE FROM Comment c WHERE c.blog.blogId = :blogId"),
-		@NamedQuery(name = Blog.FIND_USER_BLOGS, query = "SELECT b FROM Blog b WHERE b.author.userName = :userName") })
-
+@Entity
 public class Blog {
 
-	public static final String DELETE_BLOG_COMMENTS = "Blog.deleteBlogComments";
-	public static final String FIND_USER_BLOGS = "Blog.findUserBlogs";
-	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long blogId;
 
-	@NotNull
 	private String title;
-
-	@NotNull
 	private String blogContent;
-
 	private String category;
+
 	private int upVote;
 	private int downVote;
 
-	// @NotNull
-	@UpdateTimestamp
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date lastUpdatedOn;
+	private Date lastUpdatedOn = new Date();
+	@PrePersist void prePersist() { lastUpdatedOn = new Date(); }
 
-	@ManyToOne
-	private User author;
+	private String author;
 
 	public Blog() {
 	}
 
-	public Blog(long id, String title, String blogContent, Date lastUpdatedOn, User author) {
+	public Blog(long id, String title, String blogContent, Date lastUpdatedOn, String author) {
 		super();
 		this.blogId = id;
 		this.title = title;
@@ -115,12 +92,11 @@ public class Blog {
 		this.lastUpdatedOn = lastUpdatedOn;
 	}
 
-	public User getAuthor() {
+	public String getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(User author) {
+	public void setAuthor(String author) {
 		this.author = author;
 	}
-
 }

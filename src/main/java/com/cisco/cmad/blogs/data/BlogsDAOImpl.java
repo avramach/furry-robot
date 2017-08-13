@@ -1,122 +1,79 @@
 package com.cisco.cmad.blogs.data;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.dao.BasicDAO;
 
 import com.cisco.cmad.blogs.api.Blog;
-import com.cisco.cmad.blogs.util.Constants;
+import com.mongodb.MongoClient;
 
-public class BlogsDAOImpl implements BlogsDAO {
-	private EntityManagerFactory factory = Persistence.createEntityManagerFactory(Constants.PERSISTENCE_UNIT_NAME);
+public class BlogsDAOImpl extends BasicDAO<Blog, Long> implements BlogsDAO {
 
-	private UsersDAO userDao = new UsersDAOImpl();
+	public static MongoClient mongoClient = new MongoClient("192.168.99.1:27017");
+	public static Morphia morphia = new Morphia();
+	public static Datastore datastore = morphia.createDatastore(mongoClient, "cmad_blog");
+	private static final AtomicInteger index = new AtomicInteger(0);
+
+    public BlogsDAOImpl() {
+        this(Blog.class, datastore);
+    }
+
+	public BlogsDAOImpl(Class<Blog> entityClass, Datastore ds) {
+		super(entityClass, ds);
+	}
 
 	@Override
 	public void create(Blog blog) {
 		try {
-			EntityManager em = factory.createEntityManager();
-			em.getTransaction().begin();
-
-			// temporary fix
-			// TODO get the existng user and associate it;
-			blog.setAuthor(userDao.read(blog.getAuthor().getUserName()));
-
-			em.persist(blog);
-			em.getTransaction().commit();
-			em.close();
+			blog.setBlogId(index.incrementAndGet());
+	        save(blog);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@Override
 	public Blog read(long blogId) {
-		EntityManager em = factory.createEntityManager();
-
-		em.getTransaction().begin();
-		Blog blog = em.find(Blog.class, blogId);
-		em.getTransaction().commit();
-
-		em.close();
-		return blog;
+        Blog blog = findOne("_id", blogId);
+        return blog;
 	}
 
 	@Override
 	public List<Blog> readByCategory(String category) {
-		EntityManager em = factory.createEntityManager();
-
-		em.getTransaction().begin();
-		TypedQuery<Blog> query = em.createQuery("SELECT b FROM Blog b WHERE b.category = :category", Blog.class);
-		query.setParameter("category", category);
-		List<Blog> blogs = query.getResultList();
-		em.getTransaction().commit();
-
-		em.close();
+		List<Blog> blogs = createQuery().filter("category", category).order("-lastUpdatedOn").asList();
 		return blogs;
 	}
 
 	@Override
 	public List<Blog> readAllBlogs() {
-		EntityManager em = factory.createEntityManager();
-
-		em.getTransaction().begin();
-		TypedQuery<Blog> query = em.createQuery("SELECT b FROM Blog b", Blog.class);
-		List<Blog> blogs = query.getResultList();
-		em.getTransaction().commit();
-
-		em.close();
-		return blogs;
+        List<Blog> blogs = createQuery().order("-lastUpdatedOn").asList();
+        return blogs;
 	}
 
 	@Override
 	public List<Blog> readByUserId(String userId) {
-		EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
-		TypedQuery<Blog> tquery = em.createNamedQuery(Blog.FIND_USER_BLOGS, Blog.class);
-		List<Blog> blogs = tquery.setParameter("userId", userId).getResultList();
-		em.getTransaction().commit();
-		em.close();
-		return blogs;
+        List<Blog> blogs = createQuery().filter("author", userId).order("-lastUpdatedOn").asList();
+        return blogs;
 	}
 
 	@Override
 	public void update(Blog blog) {
-		EntityManager em = factory.createEntityManager();
-
-		em.getTransaction().begin();
-		Blog temp = em.find(Blog.class, blog.getBlogId());
-
+        Blog temp = read(blog.getBlogId());
 		temp.setBlogContent(blog.getBlogContent());
 		temp.setTitle(blog.getTitle());
 		temp.setUpVote(blog.getUpVote());
 		temp.setDownVote(blog.getDownVote());
-
-		em.persist(temp);
-		em.getTransaction().commit();
-		em.close();
-	}
+		temp.setCategory(blog.getCategory());
+        save(temp);
+    }
 
 	@Override
 	public void delete(long blogId) {
-		EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
-		Blog blog = em.find(Blog.class, blogId);
-		em.remove(blog);
-		deleteCommentsByBlogId(blog.getBlogId(), em);
-		em.getTransaction().commit();
-		em.close();
+        Blog blog = read(blogId);
+        delete(blog);
 	}
-
-	private void deleteCommentsByBlogId(long blogId, EntityManager em) {
-		Query query = em.createNamedQuery(Blog.DELETE_BLOG_COMMENTS);
-		query.setParameter("blogId", blogId);
-		query.executeUpdate();
-	}
-
 }

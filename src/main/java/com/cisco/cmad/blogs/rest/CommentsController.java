@@ -62,7 +62,7 @@ public class CommentsController {
 	public Response create(@PathParam("blogid") int blogid, Comment comment) {
 		try {
 			Blog blog = blogService.read(blogid);
-			comment.setBlog(blog);
+			comment.setBlogId(blogid);
 			commentService.create(comment);
 			return Response.status(Response.Status.CREATED).build();
 		} catch (InvalidDataException ide) {

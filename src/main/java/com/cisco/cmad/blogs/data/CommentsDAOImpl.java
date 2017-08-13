@@ -1,82 +1,70 @@
 package com.cisco.cmad.blogs.data;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.dao.BasicDAO;
 
 import com.cisco.cmad.blogs.api.Comment;
-import com.cisco.cmad.blogs.util.Constants;
+import com.mongodb.MongoClient;
 
-public class CommentsDAOImpl implements CommentsDAO {
+public class CommentsDAOImpl extends BasicDAO<Comment, Long> implements CommentsDAO {
 
-	private EntityManagerFactory factory = Persistence.createEntityManagerFactory(Constants.PERSISTENCE_UNIT_NAME);
+	public static MongoClient mongoClient = new MongoClient("192.168.99.1:27017");
+	public static Morphia morphia = new Morphia();
+	public static Datastore datastore = morphia.createDatastore(mongoClient, "cmad_blog");
+	private static final AtomicInteger index = new AtomicInteger(0);
+
+    public CommentsDAOImpl() {
+        this(Comment.class, datastore);
+    }
+
+	public CommentsDAOImpl(Class<Comment> entityClass, Datastore ds) {
+		super(entityClass, ds);
+	}
 
 	@Override
 	public void create(Comment comment) {
-		EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
-		em.persist(comment);
-		em.getTransaction().commit();
-		em.close();
+		try {
+			comment.setCommentId(index.incrementAndGet());
+	        save(comment);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public Comment read(long commentId) {
-		EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
-		Comment comment = em.find(Comment.class, commentId);
-		em.getTransaction().commit();
-		em.close();
-		return comment;
+        Comment comment = findOne("_id", commentId);
+        return comment;
 	}
 
 	@Override
 	public List<Comment> readAllByBlogId(long blogId) {
-		EntityManager em = factory.createEntityManager();
-        em.getTransaction().begin();
-        TypedQuery<Comment> tquery = em.createNamedQuery(Comment.FIND_BLOG_COMMENTS, Comment.class);
-        List<Comment> comments = tquery.setParameter("blogId", blogId).getResultList();
-        em.getTransaction().commit();
-        em.close();
+        List<Comment> comments = createQuery().filter("blogId", blogId).order("-lastUpdatedOn").asList();
         return comments;
 	}
 
 	@Override
 	public void update(Comment updatedComment) {
-		EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
-		Comment comment = em.find(Comment.class, updatedComment.getCommentId());
-		comment.setCommentText(updatedComment.getCommentText());
-		comment.setUpVote(updatedComment.getUpVote());
-		comment.setDownVote(updatedComment.getDownVote());
-		em.getTransaction().commit();
-		em.close();
+        Comment temp = read(updatedComment.getCommentId());
+		temp.setCommentText(updatedComment.getCommentText());
+		temp.setUpVote(updatedComment.getUpVote());
+		temp.setDownVote(updatedComment.getDownVote());
+        save(temp);
 	}
 
 	@Override
 	public void delete(long commentId) {
-		EntityManager em = factory.createEntityManager();
-		em.getTransaction().begin();
-		Comment comment = em.find(Comment.class, commentId);
-		em.remove(comment);
-		em.getTransaction().commit();
-		em.close();
+        Comment comment = read(commentId);
+        delete(comment);
 	}
 
 	@Override
 	public long readCountByBlogId(long blogId) {
-		EntityManager em = factory.createEntityManager();
-        em.getTransaction().begin();
-        Query query = em.createNamedQuery(Comment.COUNT_BLOG_COMMENTS);
-        query.setParameter("blogId", blogId);
-        Long count = (Long) query.getSingleResult();
-        em.getTransaction().commit();
-        em.close();
-        return count;
+		List<Comment> comments = createQuery().filter("blogId", blogId).asList();
+		return comments.size();
 	}
-
 }

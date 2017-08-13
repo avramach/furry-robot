@@ -1,36 +1,17 @@
 package com.cisco.cmad.blogs.api;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.validation.constraints.NotNull;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 
-@Entity(name = "User")
-@NamedQueries({
-		@NamedQuery(name = User.FIND_BY_LOGIN_PASSWORD, query = "SELECT u FROM User u WHERE u.userName = :userName AND u.password = :password"),
-		@NamedQuery(name = User.FIND_ALL, query = "SELECT u FROM User u ORDER BY u.firstName DESC"),
-		@NamedQuery(name = User.DELETE_BLOGS_BY_USER_ID, query = "DELETE FROM Blog b WHERE b.author.userName = :userName"),
-		@NamedQuery(name = User.DELETE_COMMENTS_BY_USER_ID, query = "DELETE FROM Comment c WHERE c.addedBy.userName = :userName") })
+@Entity
 public class User {
-
-	public static final String FIND_BY_LOGIN_PASSWORD = "User.findByLoginAndPassword";
-	public static final String FIND_ALL = "User.findAll";
-	public static final String DELETE_BLOGS_BY_USER_ID = "User.deleteBlogsByUserId";
-	public static final String DELETE_COMMENTS_BY_USER_ID = "User.deleteCommentsByUserId";
 
 	@Id
 	private String userName;
-
-	@NotNull
 	private String password;
 
-	@NotNull
 	private String firstName;
-
 	private String lastName;
-
-	@NotNull
 	private String emailId;
 
 	public User() {
@@ -84,5 +65,4 @@ public class User {
 	public void setEmailId(String emailId) {
 		this.emailId = emailId;
 	}
-
 }

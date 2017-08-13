@@ -34,17 +34,15 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
-		
-		<!--  jpa dependencies -->
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<version>5.2.10.Final</version>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>3.4.2</version>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.38</version>
+			<groupId>org.mongodb.morphia</groupId>
+			<artifactId>morphia</artifactId>
+			<version>1.3.0</version>
 		</dependency>
 		<dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -53,7 +51,7 @@
         </dependency>
   </dependencies>
   <build>
-    <finalName>cmad-blog-project</finalName>
+    <finalName>cmad-blog-project-advance</finalName>
     <plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
