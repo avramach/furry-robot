@@ -49,6 +49,7 @@ public class UsersController {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
 	public Response getAll() {
 		try {
 			List<User> matched;
@@ -82,6 +83,7 @@ public class UsersController {
 	@GET
 	@Path("/{username}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
 	public Response get(@PathParam("username") String username) {
 		try {
 			User data = userService.read(username);
@@ -98,6 +100,7 @@ public class UsersController {
 	@POST
 	@Path("/{username}")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
 	public Response update(@PathParam("username") String userName, User user) {
 		try {
 			userService.update(user);
@@ -111,6 +114,7 @@ public class UsersController {
 
 	@DELETE
 	@Path("/{username}")
+	@JwtTokenExpected
 	public Response delete(@PathParam("username") String userName) {
 		try {
 			userService.delete(userName);
@@ -125,6 +129,7 @@ public class UsersController {
 	@GET
 	@Path("/{username}/blogs")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
 	public Response getBlogs(@PathParam("username") String username) {
 		try {
 			// TODO implementation
@@ -139,6 +144,7 @@ public class UsersController {
 	@GET
 	@Path("/{username}/comments")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
 	public Response getComments(@PathParam("username") String username) {
 		try {
 			// TODO implementation
@@ -151,7 +157,7 @@ public class UsersController {
 	}
 
 	@POST
-	@Path("/{userId}") // used for authenticating user
+	@Path("/authenticateUser") // used for authenticating user
 	public Response authenticateUser(User user) {
 		try {
 			logger.info("#### login/password : " + user.getUserName() + "/" + user.getPassword());

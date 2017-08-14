@@ -32,6 +32,7 @@ public class CommentsController {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
 	public Response getAll(@PathParam("blogid") int blogid) {
 		try {
 			List<Comment> comments = commentService.readAllByBlogId(blogid);
@@ -46,6 +47,7 @@ public class CommentsController {
 	@GET
 	@Path("/count")
 	@Produces(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
 	public Response getCount(@PathParam("blogid") int blogid) {
 		try {
 			long count = commentService.readCountByBlogId(blogid);
@@ -59,6 +61,7 @@ public class CommentsController {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
 	public Response create(@PathParam("blogid") int blogid, Comment comment) {
 		try {
 			Blog blog = blogService.read(blogid);
@@ -79,6 +82,7 @@ public class CommentsController {
 	@POST
 	@Path("/{commentid}")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
 	public Response update(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid, Comment comment) {
 		try {
 			commentService.update(comment);
@@ -92,6 +96,7 @@ public class CommentsController {
 
 	@DELETE
 	@Path("/{commentid}")
+	@JwtTokenExpected
 	public Response delete(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
 			commentService.delete(commentid);
@@ -105,6 +110,7 @@ public class CommentsController {
 
 	@PUT
 	@Path("/{commentid}/upvote")
+	@JwtTokenExpected
 	public Response doUpvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
 			Comment comment = commentService.read(commentid);
@@ -124,6 +130,7 @@ public class CommentsController {
 
 	@DELETE
 	@Path("/{commentid}/upvote")
+	@JwtTokenExpected
 	public Response undoUpvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
 			Comment comment = commentService.read(commentid);
@@ -143,6 +150,7 @@ public class CommentsController {
 
 	@PUT
 	@Path("/{commentid}/downvote")
+	@JwtTokenExpected
 	public Response doDownvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
 			Comment comment = commentService.read(commentid);
@@ -162,6 +170,7 @@ public class CommentsController {
 
 	@DELETE
 	@Path("/{commentid}/downvote")
+	@JwtTokenExpected
 	public Response undoDownvote(@PathParam("blogid") int blogid, @PathParam("commentid") int commentid) {
 		try {
 			Comment comment = commentService.read(commentid);

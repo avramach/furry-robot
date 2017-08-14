@@ -28,6 +28,7 @@ public class BlogsController {
     @GET
     @Path("/{blogId}")
     @Produces(MediaType.APPLICATION_JSON)
+    @JwtTokenExpected
     public Response read(@PathParam("blogId") long blogId) {
         Blog blog = blogsService.read(blogId);
         return Response.ok().entity(blog).build();
@@ -36,6 +37,7 @@ public class BlogsController {
     @GET
     @Path("/category/{category}")
     @Produces(MediaType.APPLICATION_JSON)
+    @JwtTokenExpected
     public Response readCategory(@PathParam("category") String category) {
         List<Blog> blogs = blogsService.readByCategory(category);
         return Response.ok().entity(blogs).build();
@@ -43,6 +45,7 @@ public class BlogsController {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
 	public Response getAll() {
 		try {
 			List<Blog> blogs = blogsService.readAllBlogs();
@@ -56,6 +59,7 @@ public class BlogsController {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
 	public Response create(Blog blog) {
 		try {
 			 blogsService.create(blog);
@@ -74,6 +78,7 @@ public class BlogsController {
 	@POST
 	@Path("/{blogid}")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@JwtTokenExpected
 	public Response update(@PathParam("blogid") int blogid, Blog blog) {
 		try {
 			blogsService.update(blog);
@@ -87,6 +92,7 @@ public class BlogsController {
 
 	@DELETE
 	@Path("/{blogid}")
+	@JwtTokenExpected
 	public Response delete(@PathParam("blogid") int blogid) {
 		try {
 			blogsService.delete(blogid);
@@ -100,6 +106,7 @@ public class BlogsController {
 
 	@PUT
 	@Path("/{blogid}/upvote")
+	@JwtTokenExpected
 	public Response doUpvote(@PathParam("blogid") int blogid) {
 		try {
 			Blog blog = blogsService.read(blogid);
@@ -119,6 +126,7 @@ public class BlogsController {
 
 	@DELETE
 	@Path("/{blogid}/upvote")
+	@JwtTokenExpected
 	public Response undoUpvote(@PathParam("blogid") int blogid) {
 		try {
 			Blog blog = blogsService.read(blogid);
@@ -138,6 +146,7 @@ public class BlogsController {
 
 	@PUT
 	@Path("/{blogid}/downvote")
+	@JwtTokenExpected
 	public Response doDownvote(@PathParam("blogid") int blogid) {
 		try {
 			Blog blog = blogsService.read(blogid);
@@ -157,6 +166,7 @@ public class BlogsController {
 
 	@DELETE
 	@Path("/{blogid}/downvote")
+	@JwtTokenExpected
 	public Response undoDownvote(@PathParam("blogid") int blogid) {
 		try {
 			Blog blog = blogsService.read(blogid);
