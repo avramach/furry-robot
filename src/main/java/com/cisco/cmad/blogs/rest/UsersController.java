@@ -47,13 +47,6 @@ public class UsersController {
 	@Context
 	private UriInfo uriInfo;
 
-	/*@GET
-	@Path("/{userId}")
-	public Response read(@PathParam("userId") String userId) {
-		User user = userService.read(userId);
-		return Response.ok().entity(user).build();
-	}*/
-
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAll() {
@@ -91,8 +84,8 @@ public class UsersController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response get(@PathParam("username") String username) {
 		try {
-			userService.read(username);
-			return Response.ok().build();
+			User data = userService.read(username);
+			return Response.ok().entity(data).build();
 		} catch (DataNotFoundException dnfe) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
 		} catch (BlogException be) {
