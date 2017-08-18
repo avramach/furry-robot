@@ -42,13 +42,8 @@ public class UsersDAOImpl extends BasicDAO<User, String> implements UsersDAO {
 
 	@Override
 	public User readByUserIdAndPassword(String userName, String password) {
-		User user = findOne("_id", userName);
-		if (user.getPassword() == password) {
-			return user;
-		}
-		else {
-			return null;
-		}
+		User user = createQuery().field("_id").contains(userName).field("password").contains(password).get();
+		return user;
 	}
 
 	@Override

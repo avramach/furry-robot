@@ -28,7 +28,6 @@ public class BlogsController {
     @GET
     @Path("/{blogId}")
     @Produces(MediaType.APPLICATION_JSON)
-    @JwtTokenExpected
     public Response read(@PathParam("blogId") long blogId) {
         Blog blog = blogsService.read(blogId);
         return Response.ok().entity(blog).build();
@@ -45,7 +44,6 @@ public class BlogsController {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JwtTokenExpected
 	public Response getAll() {
 		try {
 			List<Blog> blogs = blogsService.readAllBlogs();
