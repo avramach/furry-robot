@@ -13,5 +13,5 @@ function getCookieValue(key) {
 module.exports = {
     store: storeCookie,
     remove: removeCookie,
-    get: getCookie
+    get: getCookieValue
 }
