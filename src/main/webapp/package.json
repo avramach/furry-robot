@@ -1,20 +1,21 @@
 {
-    "name": "blog_reactjs",
-    "version": "1.0.0",
-    "main": "index.js",
-    "scripts": {
-        "start": "webpack-dev-server --hot",
-        "build": "webpack"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "react": "^15.6.1",
-        "react-dom": "^15.6.1",
-        "react-router-dom": "^4.1.2",
-        "webpack": "^3.5.5",
-        "webpack-dev-server": "^2.7.1"
-    },
-    "devDependencies": {},
-    "description": ""
+  "name": "blog_reactjs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --hot",
+    "build": "webpack"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "query-string": "^5.0.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-router-dom": "^4.1.2",
+    "webpack": "^3.5.5",
+    "webpack-dev-server": "^2.7.1"
+  },
+  "devDependencies": {},
+  "description": ""
 }

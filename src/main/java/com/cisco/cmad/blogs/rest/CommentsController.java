@@ -32,7 +32,6 @@ public class CommentsController {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@JwtTokenExpected
 	public Response getAll(@PathParam("blogid") int blogid) {
 		try {
 			List<Comment> comments = commentService.readAllByBlogId(blogid);
@@ -47,7 +46,6 @@ public class CommentsController {
 	@GET
 	@Path("/count")
 	@Produces(MediaType.APPLICATION_JSON)
-	@JwtTokenExpected
 	public Response getCount(@PathParam("blogid") int blogid) {
 		try {
 			long count = commentService.readCountByBlogId(blogid);

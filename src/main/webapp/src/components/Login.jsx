@@ -1,6 +1,52 @@
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
+
+import * as Backend from '../script/backend.js';
+import * as Cookie from '../script/cookie.js';
 
 class Login extends React.Component {
+    constructor() {
+        super();
+        this.state = {
+            user: ""
+        };
+
+        this.login = this.login.bind(this);
+        this.resetInput = this.resetInput.bind(this);
+        this.resetInput();
+    }
+
+    resetInput() {
+        $('#appLoginUserName').val("");
+        $('#appLoginPassword').val("");
+    }
+
+    login() {
+        var username = $('#appLoginUserName').val();
+        var password = $('#appLoginPassword').val();
+        if ((username.length > 0) && 
+            (password.length > 0)) {
+            Backend.authenticateUser(username, password, (authorization) => {
+                if (authorization !== null) {
+                    Cookie.store("TOKEN", authorization);
+                    Cookie.store("USER", username);
+                }
+                else {
+                    // TODO: need error handline
+                    this.resetInput();
+                }
+            });
+        }
+        else {
+            console.warn("Invalid Input");
+            this.resetInput();
+        }
+    }
+
     render() {
         return (
             <div id="appLogin" className="container-fluid text-center">
@@ -9,18 +55,18 @@ class Login extends React.Component {
                     <div className="col-sm-6 text-center">
                         <form className="w3-container">
                             <div className="form-group"></div>
-                            <div className="form-group">
+                            <div className="form-group col-md-12">
                                 <input type="text" className="w3-input w3-border w3-block" id="appLoginUserName" placeholder="User Name " />
                             </div>
-                            <div className="form-group">
+                            <div className="form-group col-md-12">
                                 <input type="password " className="w3-input w3-border w3-block" id="appLoginPassword" placeholder="Password " />
                             </div>
                             <div className="form-group">
                                 <div className="col-md-6">
-                                    <button type="button" className="w3-btn w3-block w3-black w3-hover-blue btn-default" id="appLoginLogin">Login</button>
+                                    <button type="button" className="w3-btn w3-block w3-black w3-hover-blue btn-default" id="appLoginLogin" onClick={this.login}>Login</button>
                                 </div>
                                 <div className="col-md-6">
-                                    <button type="button" className="w3-btn w3-block w3-black w3-hover-blue btn-default" id="appLoginSignup">Signup</button>
+                                    <Link to="/signup"><button type="button" className="w3-btn w3-block w3-black w3-hover-blue btn-default" id="appLoginSignup">Signup</button></Link>
                                 </div>
                             </div>
                         </form>

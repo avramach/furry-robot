@@ -1,23 +1,29 @@
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
+
+import * as Backend from '../script/backend.js';
 
 class Blog extends React.Component {
-    constructor() {
-        super();
-        // TODO: the blog shall come in from the input
+    constructor(props) {
+        super(props);
         // TODO: set the delete button depending on input authorization code
+        this.props = props;
         this.state = {
-            blog: {
-                blogId: 1,
-                title: "This is my first blog",
-                content: "This is a new blog.",
-                userName: "GuruVinayak P",
-                timeStamp: "Now",
-                comments: 1,
-                upvotes: 1,
-                downvotes: 0
-            }
+            blog: {}
         };
         this.renderBlog = this.renderBlog.bind(this);
+
+        var query = require('query-string').parse(location.search);
+        Backend.getBlog(query.blogId, (blog) => {
+            this.setState({
+                blog: blog
+            });
+        });
+
     }
 
     renderBlog(blog) {
@@ -28,11 +34,11 @@ class Blog extends React.Component {
                     <div className="w3-card-4">
                         <header className="w3-container w3-gray text-center">
                             <h1><b>{blog.title}</b></h1>
-                            <h6>Posted by <i><b>{blog.userName}</b></i> on <i>{blog.timeStamp}</i></h6>
+                            <h6>Posted by <i><b>{blog.author}</b></i> on <i>{Date(blog.lastUpdatedOn)}</i></h6>
                         </header>
 
                         <div className="w3-container text-justify blog-content">
-                            {blog.content}
+                            {blog.blogContent}
                         </div>
 
                         <footer className="w3-container w3-light-gray">
@@ -44,10 +50,10 @@ class Blog extends React.Component {
                                     <button type="button" className="w3-button w3-block w3-light-gray w3-hover-light-gray">Comments <span className="badge">{blog.comments}</span></button>
                                 </div>
                                 <div className="col-md-2">
-                                    <button type="button" className="w3-btn w3-block w3-light-gray w3-hover-blue"><span className="glyphicon glyphicon-thumbs-up"></span> <span className="badge">{blog.upvotes}</span></button>
+                                    <button type="button" className="w3-btn w3-block w3-light-gray w3-hover-blue"><span className="glyphicon glyphicon-thumbs-up"></span> <span className="badge">{blog.upVote}</span></button>
                                 </div>
                                 <div className="col-md-2">
-                                    <button type="button" className="w3-btn w3-block w3-light-gray w3-hover-blue"><span className="glyphicon glyphicon-thumbs-down"></span> <span className="badge">{blog.downvotes}</span></button>
+                                    <button type="button" className="w3-btn w3-block w3-light-gray w3-hover-blue"><span className="glyphicon glyphicon-thumbs-down"></span> <span className="badge">{blog.downVote}</span></button>
                                 </div>
                             </div>
                         </footer>
