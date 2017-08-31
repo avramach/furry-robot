@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.cisco.cmad</groupId>
-  <artifactId>cmad-blog-project</artifactId>
+  <artifactId>cmadBlog</artifactId>
   <packaging>war</packaging>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>cmad-blog-project Maven Webapp</name>
+  <version>1</version>
+  <name>cmadBlog Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
@@ -58,7 +58,7 @@
 	  </dependency>
   </dependencies>
   <build>
-    <finalName>cmad-blog-project-advance</finalName>
+    <finalName>cmadBlog</finalName>
     <plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
